@@ -188,7 +188,7 @@ let g:terminal_color_4="#669acd"
 " let g:pencil_terminal_italics = 1
 let g:gruvbox_italic=1
 let g:gruvbox_sign_column="bg0"
-let g:gruvbox_contrast_dark="hard"
+let g:gruvbox_contrast_dark="meduim"
 let g:gruvbox_hls_cursor="orange"
 colorscheme gruvbox
 
