@@ -9,6 +9,7 @@ endif
 
 call plug#begin('~/.config/nvim')
 " utilities
+Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/deoplete.nvim'
 Plug 'racer-rust/vim-racer'
