@@ -4,7 +4,7 @@ filetype off                  " required
 if has('nvim')
 	set ttimeout
 	set ttimeoutlen=0
-    set termguicolors
+    " set termguicolors
 endif
 
 call plug#begin('~/.config/nvim')
@@ -12,14 +12,14 @@ call plug#begin('~/.config/nvim')
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/deoplete.nvim'
-Plug 'racer-rust/vim-racer'
+" Plug 'racer-rust/vim-racer'
 Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
 Plug 'airblade/vim-rooter'
 Plug '~/.config/nvim/autoload'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'easymotion/vim-easymotion'
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
@@ -32,11 +32,11 @@ Plug 'mhinz/vim-startify'
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 Plug 'thinca/vim-ref'
-Plug 'rust-lang/rust.vim'
-Plug 'othree/yajs.vim', { 'for': 'javascript' }
+" Plug 'rust-lang/rust.vim'
+" Plug 'othree/yajs.vim', { 'for': 'javascript' }
 Plug 'othree/html5.vim'
-Plug 'fatih/vim-go'
-Plug 'klen/python-mode'
+" Plug 'fatih/vim-go'
+" Plug 'klen/python-mode'
 
 " colorschemes
 Plug 'shinchu/lightline-gruvbox.vim'
@@ -208,7 +208,10 @@ nmap <silent> <Down> <c-w> -
 cmap w!! w !sudo tee > /dev/null %
 
 " exit terminal mode
-:tnoremap <Esc> <C-\><C-n>
+" tnoremap <Esc> <C-\><C-n>
+
+" Use space as leader
+let mapleader = "\<Space>"
 
 " moving around
 :tnoremap <C-h> <C-\><C-n><C-w>h
@@ -219,6 +222,13 @@ cmap w!! w !sudo tee > /dev/null %
 :nnoremap <C-j> <C-w>j
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
+
+autocmd FileType fzf tnoremap <buffer> <C-j> <Down>
+autocmd FileType fzf tnoremap <buffer> <C-k> <Up>
+
+" Tab completion
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " easymotion set 'space' as prefix
 " map <Leader><Space> <Plug>(easymotion-prefix)
@@ -232,9 +242,15 @@ let g:EasyMotion_smartcase = 1
 "jump to last buffer
 nnoremap <leader><leader> <c-^>
 
+"FZF
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+
+command! -bang -nargs=* FindAll call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 "FZF mappings
 nnoremap <silent><leader>z :GitFiles<CR>
 nnoremap <silent><leader>f :Files<CR>
+nnoremap <silent><leader>s :Find<CR>
+nnoremap <silent><leader>a :FindAll<CR>
 nnoremap <silent><leader>b :Buffers<CR>
 nnoremap <silent><leader>c :Colors<CR>
 
