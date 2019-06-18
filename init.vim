@@ -16,57 +16,44 @@ endif
 call plug#begin('~/.config/nvim')
 " utilities
 Plug 'machakann/vim-highlightedyank'
-" Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'tpope/vim-endwise'
 Plug 'jiangmiao/auto-pairs'
-" Plug 'scrooloose/syntastic'
 Plug 'Shougo/deoplete.nvim'
-Plug 'Shougo/denite.nvim'
-Plug 'Shougo/neomru.vim'
-Plug 'nixprime/cpsm'
-" Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
-" Plug 'mattn/emmet-vim'
-" Plug 'mbbill/undotree'
-" Plug 'airblade/vim-rooter'
 Plug '~/.config/nvim/autoload'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-" Plug 'easymotion/vim-easymotion'
 Plug 'itchyny/lightline.vim'
-" Plug 'airblade/vim-gitgutter'
 Plug 'ap/vim-css-color'
 Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-surround'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
-" Plug 'thinca/vim-ref'
+
 " Plug 'w0rp/ale'
-" Plug 'ervandew/supertab'
-" Plug 'racer-rust/vim-racer'
+" Plug 'tpope/vim-surround'
+" Plug 'mattn/emmet-vim'
+" Plug 'airblade/vim-rooter'
 
 " Syntax
 "
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+
 " Elixir
-"Plug 'mhinz/vim-mix-format'
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 
-Plug 'othree/html5.vim'
-" Plug 'rust-lang/rust.vim'
-" Plug 'othree/yajs.vim', { 'for': 'javascript' }
-" Plug 'fatih/vim-go'
-" Plug 'klen/python-mode'
+" Zig
+Plug 'ziglang/zig.vim'
 
-" colorschemes
-Plug 'shinchu/lightline-gruvbox.vim'
+" Other
+Plug 'othree/html5.vim'
+
+" Colorschemes.. yep
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/iceberg.vim'
 Plug 'nightsense/snow'
 Plug 'nightsense/stellarized'
-Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'bluz71/vim-moonfly-colors'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'jacoborus/tender.vim'
@@ -74,6 +61,11 @@ Plug 'nightsense/cosmic_latte'
 Plug 'ajh17/Spacegray.vim'
 Plug 'everard/vim-aurora'
 Plug 'tjammer/blayu.vim'
+Plug 'junegunn/seoul256.vim'
+
+" Misc
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 
 call plug#end()
 
@@ -114,8 +106,8 @@ set smartcase       " Override the 'ignorecase' option if the search pattern
 " contains upper case characters.
 
 set backspace=2     " Influences the working of <BS>, <Del>, CTRL-W
-" and CTRL-U in Insert mode. This is a list of items,
-" separated by commas. Each item allows a way to backspace
+" and CTRL-U in Insert mode. This is a list of items, separated by commas. Each
+" item allows a way to backspace
 " over something.
 
 set autoindent      " Copy indent from current line when starting a new line
@@ -149,15 +141,8 @@ set timeoutlen=700  " set breakindent
 
 syntax on
 
-" Setting python providers (for deoplete)
-let g:python3_host_prog = '/usr/local/bin/python3'
-let g:python_host_prog  = '/usr/local/bin/python2'
-
 " js syntax
 let g:syntastic_javascript_checkers = ['eslint']
-
-" vue syntax
-au BufRead,BufNewFile *.vue set filetype=html
 
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
@@ -182,22 +167,9 @@ set colorcolumn=100 " show ruler
 " treat underscores as word boundaries
 set iskeyword-=_
 
-" Go
-let g:go_fmt_command = "goimports"
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-
-" rust
-let g:racer_cmd ="/usr/bin/racer"
-let $RUST_SRC_PATH="/usr/src/rust/src/"
-let g:rustfmt_autosave = 1
-
 " Signify
 let g:signify_vcs_list = ['git']
-let g:signify_realtime = 0
+let g:signify_realtime = 100
 
 "--- sweet look ---
 "" let g:startify_custom_header =  map(split(system('fortune | cowsay'),'\n'), '" ". v:val')
@@ -219,16 +191,17 @@ let g:startify_list_order = [
 "-------------------terminal----------------------
 "-------------------colors------------------------
 "-------------------------------------------------
-let g:terminal_color_0="#1b2b34"
-let g:terminal_color_1="#ed5f67"
-let g:terminal_color_2="#9ac895"
-let g:terminal_color_3="#fbc963"
-let g:terminal_color_4="#669acd"
+" let g:terminal_color_0="#1b2b34"
+" let g:terminal_color_1="#ed5f67"
+" let g:terminal_color_2="#9ac895"
+" let g:terminal_color_3="#fbc963"
+" let g:terminal_color_4="#669acd"
 "-------------------------------------------------
 
 let g:enable_bold_font = 1
 let g:enable_italic_font = 1
 
+" Colorscheme specific settings
 let g:gruvbox_italic=1
 let g:gruvbox_sign_column="bg0"
 let g:gruvbox_contrast_dark="meduim"
@@ -236,11 +209,18 @@ let g:gruvbox_hls_cursor="orange"
 
 
 let g:spacegray_use_italics = 1
-" let g:spacegray_low_contrast = 1
 
-set background=light
-colorscheme cosmic_latte "PaperColor blayu snow  spacegray stellarized hybrid_material iceberg gruvbox
+let g:seoul256_background = 235
+let g:seoul256_light_background = 255
 
+"cosmic_latte PaperColor blayu snow  spacegray stellarized hybrid_material iceberg gruvbox
+
+colo seoul256-light
+colo seoul256
+
+let g:seoul256_srgb = 1
+
+set signcolumn=yes
 highlight clear SignColumn
 highlight SignifySignAdd    cterm=bold ctermbg=237  ctermfg=119
 highlight SignifySignDelete cterm=bold ctermbg=237  ctermfg=167
@@ -280,34 +260,12 @@ autocmd FileType fzf tnoremap <buffer> <C-j> <Down>
 autocmd FileType fzf tnoremap <buffer> <C-k> <Up>
 
 " Tab completion
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" easymotion set 'space' as prefix
-" map <Leader><Space> <Plug>(easymotion-prefix)
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-map  s <Plug>(easymotion-bd-f)
-nmap s <Plug>(easymotion-overwin-f)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-let g:EasyMotion_smartcase = 1
 
 " jump to last buffer
 nnoremap <leader><leader> <c-^>
-
-" Git Gutter
-" update freq. for gitgutter
-set updatetime=100
-" always show sign column
-if exists('&signcolumn')  " Vim 7.4.2201
-    set signcolumn=yes
-else
-    let g:gitgutter_sign_column_always = 1
-endif
-
-" Markdown live preview feature
-let vim_markdown_preview_github=1
-let vim_markdown_preview_hotkey='<C-m>'
 
 " Ale
 " set omnifunc=ale#completion#OmniFunc
@@ -328,104 +286,32 @@ let g:ale_linters = {
             \  'javascript': ['prettier', 'eslint', 'tsserver'],
             \}
 
+" Setting python providers (for deoplete)
+let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog  = '/usr/local/bin/python2'
+
+" Deoplete
 let g:deoplete#enable_at_startup = 1
+
 " let g:deoplete#sources = {'_': ['ale', 'buffer']}
 " call deoplete#custom#source('ale', 'rank', 150)
-" Define mappings
-
-let g:fruzzy#usenative = 1
-
-autocmd FileType denite call s:denite_my_settings()
-function! s:denite_my_settings() abort
-    nnoremap <silent><buffer><expr> <CR>
-                \ denite#do_map('do_action')
-    nnoremap <silent><buffer><expr> d
-                \ denite#do_map('do_action', 'delete')
-    nnoremap <silent><buffer><expr> p
-                \ denite#do_map('do_action', 'preview')
-    nnoremap <silent><buffer><expr> q
-                \ denite#do_map('quit')
-    nnoremap <silent><buffer><expr> i
-                \ denite#do_map('open_filter_buffer')
-    nnoremap <silent><buffer><expr> <Space>
-                \ denite#do_map('toggle_select').'j'
-endfunction
-
-call denite#custom#var('file/rec', 'command',
-            \ ['rg', '--files', '--glob', '!.git'])
-
-call denite#custom#source(
-            \ 'file_mru', 'matchers', ['matcher/fuzzy', 'matcher/project_files'])
-call denite#custom#source(
-            \ 'file/rec', 'matchers', ['matcher/cpsm'])
-
-call denite#custom#source(
-            \ 'file/rec', 'sorters', ['sorter/sublime'])
-let s:menus = {}
-
-let s:menus.configs = {
-            \ 'description': 'Edit configs'
-            \ }
-let s:menus.configs.file_candidates = [
-            \ ['zshrc', '~/.zshrc'],
-            \ ['~/.config/nvim/init.vim', '~/.config/nvim/init.vim'],
-            \ ]
-
-let s:menus.my_commands = {
-            \ 'description': 'Example commands'
-            \ }
-let s:menus.my_commands.command_candidates = [
-            \ ['Split the window', 'vnew'],
-            \ ['Open zsh menu', 'Denite menu:zsh'],
-            \ ['Format code', 'FormatCode', 'go,python'],
-            \ ]
-
-call denite#custom#var('menu', 'menus', s:menus)
-
-call denite#custom#var('grep', 'command', ['rg'])
-call denite#custom#var('grep', 'default_opts',
-            \ ['-i', '--vimgrep', '--no-heading'])
-call denite#custom#var('grep', 'recursive_opts', [])
-call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-call denite#custom#var('grep', 'separator', ['--'])
-call denite#custom#var('grep', 'final_opts', [])
-
-autocmd FileType denite-filter call s:denite_filter_my_settings()
-function! s:denite_filter_my_settings() abort
-  imap <silent><buffer> <C-c> <Plug>(denite_filter_quit)
-endfunction
-
-nnoremap <silent><leader>p :DeniteProjectDir -start-filter -expand file/rec<CR>
-nnoremap <silent><leader>f :Denite file/rec<CR>
-nnoremap <silent><leader>m :Denite  menu<CR>
-nnoremap <silent><leader>c :Denite colorscheme<CR>
-nnoremap <silent><leader>b :Denite buffer<CR>
-nnoremap <silent><leader>r :Denite file_mru<CR>
 
 " FZF
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
 command! -bang -nargs=* FindAll call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+
 " FZF mappings
-nnoremap <silent><leader>z :GitFiles<CR>
+nnoremap <silent><leader>p :GFiles<CR>
+nnoremap <silent><leader>c :GFiles?<CR>
+nnoremap <silent><leader>f :Files<CR>
 nnoremap <silent><leader>s :Find<CR>
 nnoremap <silent><leader>a :FindAll<CR>
+nnoremap <silent><leader>b :Buffers<CR>
+nnoremap <silent><leader>] :Colors<CR>
 
-function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-
-    return l:counts.total == 0 ? 'OK' : printf(
-                \   '%dW %dE',
-                \   all_non_errors,
-                \   all_errors
-                \)
-endfunction
-
+" Lightline config
 let g:lightline = {
-            \ 'colorscheme': 'cosmic_latte_light',
+            \ 'colorscheme': 'seoul256',
             \ 'mode_map': {'c': 'N', 'i': 'I', 'n': 'N', 'v': 'V'},
             \ 'active': {
             \   'left': [['mode', 'paste'], ['fugitive', 'filename'] ],
@@ -452,6 +338,19 @@ let g:lightline = {
 let g:lightline.tab = {
             \ 'active': [ 'tabnum', 'filename', 'modified' ],
             \ 'inactive': [ 'tabnum', 'filename', 'modified' ] }
+
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+                \   '%dW %dE',
+                \   all_non_errors,
+                \   all_errors
+                \)
+endfunction
 
 function! MyModified()
     return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -512,3 +411,8 @@ function! LightlineSignify()
         return ''
     endif
 endfunction
+
+" Goyo
+
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
