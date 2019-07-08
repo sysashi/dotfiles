@@ -1,0 +1,12 @@
+#!/bin/bash
+
+env_paths=($1 ${1%/*})
+
+for entry in "${env_paths[@]}"
+do
+    env_file="$entry/env"
+    echo $env_file
+    if [[ -f $env_file ]]; then
+        source $env_file
+    fi
+done

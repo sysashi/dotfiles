@@ -1,0 +1,45 @@
+#!/bin/bash
+
+path=${1:-"~"}
+
+scripts_path=~/devel/scripts
+# launch $scripts_path/project_env ${path}
+session="cd ${path}
+#Code
+
+launch kitty @ set-tab-title "[C]"
+layout tall
+launch zsh -c 'nvim; zsh -i'
+
+
+# Dev
+new_tab "[D]"
+cd ${path}
+
+layout grid
+
+launch zsh
+launch zsh
+
+# Test
+new_tab "[T]"
+cd ${path}
+
+layout tall
+launch zsh
+
+# Test
+new_tab "cmus"
+
+layout tall
+launch cmus
+
+# Test
+new_tab "misc"
+
+layout grid
+launch zsh
+"
+size=${2:-"fullscreen"}
+
+kitty --single-instance --start-as=${size} --session <(echo "$session")
