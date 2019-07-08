@@ -18,7 +18,7 @@ call plug#begin('~/.config/nvim')
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-endwise'
 Plug 'jiangmiao/auto-pairs'
-Plug 'Shougo/deoplete.nvim'
+" Plug 'Shougo/deoplete.nvim'
 Plug '~/.config/nvim/autoload'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -27,6 +27,7 @@ Plug 'ap/vim-css-color'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Plug 'w0rp/ale'
 " Plug 'tpope/vim-surround'
@@ -41,7 +42,7 @@ Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
-Plug 'slashmili/alchemist.vim'
+" Plug 'slashmili/alchemist.vim'
 
 " Zig
 Plug 'ziglang/zig.vim'
@@ -210,15 +211,16 @@ let g:gruvbox_hls_cursor="orange"
 
 let g:spacegray_use_italics = 1
 
-let g:seoul256_background = 235
-let g:seoul256_light_background = 255
-
 "cosmic_latte PaperColor blayu snow  spacegray stellarized hybrid_material iceberg gruvbox
 
-colo seoul256-light
-colo seoul256
+" let g:seoul256_background = 235
+" let g:seoul256_light_background = 255
+" colo seoul256-light
+" color seoul256
+" let g:seoul256_srgb = 1
 
-let g:seoul256_srgb = 1
+
+colo iceberg
 
 set signcolumn=yes
 highlight clear SignColumn
@@ -260,8 +262,8 @@ autocmd FileType fzf tnoremap <buffer> <C-j> <Down>
 autocmd FileType fzf tnoremap <buffer> <C-k> <Up>
 
 " Tab completion
- inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
- inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 
 " jump to last buffer
@@ -297,24 +299,23 @@ let g:deoplete#enable_at_startup = 1
 " call deoplete#custom#source('ale', 'rank', 150)
 
 " FZF
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-command! -bang -nargs=* FindAll call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+" command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+" command! -bang -nargs=* FindAll call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 " FZF mappings
 nnoremap <silent><leader>p :GFiles<CR>
 nnoremap <silent><leader>c :GFiles?<CR>
 nnoremap <silent><leader>f :Files<CR>
-nnoremap <silent><leader>s :Find<CR>
-nnoremap <silent><leader>a :FindAll<CR>
+nnoremap <silent><leader>s :Rg<CR>
 nnoremap <silent><leader>b :Buffers<CR>
 nnoremap <silent><leader>] :Colors<CR>
 
 " Lightline config
 let g:lightline = {
-            \ 'colorscheme': 'seoul256',
+            \ 'colorscheme': 'iceberg',
             \ 'mode_map': {'c': 'N', 'i': 'I', 'n': 'N', 'v': 'V'},
             \ 'active': {
-            \   'left': [['mode', 'paste'], ['fugitive', 'filename'] ],
+            \   'left': [['mode', 'paste'], ['cocstatus', 'fugitive', 'filename'] ],
             \   'right': [['lineinfo', 'sy'], [], ['fileformat', 'fileencoding', 'filetype']]
             \ },
             \ 'component_function': {
@@ -327,6 +328,7 @@ let g:lightline = {
             \   'fileencoding': 'MyFileencoding',
             \   'mode': 'MyMode',
             \   'sy': 'LightlineSignify',
+            \   'cocstatus': 'coc#status'
             \ },
             \ 'component_expand': {
             \   'ale': 'LinterStatus',
@@ -416,3 +418,42 @@ endfunction
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+
+" CoC
+"
+" suggestions from the README
+
+set updatetime=300
+set shortmess+=c
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
