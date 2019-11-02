@@ -9,16 +9,12 @@ if has('nvim')
     set inccommand=nosplit
 endif
 
-" must be here before ale is loaded
-" let g:ale_completion_enabled = 1
-" set completeopt+=noinsert
-
 call plug#begin('~/.config/nvim')
 " utilities
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-endwise'
 Plug 'jiangmiao/auto-pairs'
-" Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/deoplete.nvim'
 Plug '~/.config/nvim/autoload'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -27,12 +23,13 @@ Plug 'ap/vim-css-color'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Plug 'w0rp/ale'
 " Plug 'tpope/vim-surround'
 " Plug 'mattn/emmet-vim'
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
 " Syntax
 "
@@ -63,6 +60,8 @@ Plug 'ajh17/Spacegray.vim'
 Plug 'everard/vim-aurora'
 Plug 'tjammer/blayu.vim'
 Plug 'junegunn/seoul256.vim'
+Plug 'swalladge/antarctic-vim'
+Plug 'yasukotelin/shirotelin'
 
 " Misc
 Plug 'junegunn/goyo.vim'
@@ -221,14 +220,13 @@ let g:spacegray_use_italics = 1
 
 
 colo iceberg
+" colo shirotelin
 
 set signcolumn=yes
 highlight clear SignColumn
 highlight SignifySignAdd    cterm=bold ctermbg=237  ctermfg=119
 highlight SignifySignDelete cterm=bold ctermbg=237  ctermfg=167
 highlight SignifySignChange cterm=bold ctermbg=237  ctermfg=227
-
-
 
 " mappings
 vnoremap <C-c> "*y  " Copy to the system clipboard in visual mode
@@ -269,24 +267,6 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 " jump to last buffer
 nnoremap <leader><leader> <c-^>
 
-" Ale
-" set omnifunc=ale#completion#OmniFunc
-" Start autocomplete
-"
-let g:ale_elixir_elixir_ls_release = '/Users/sysashi/devel/elixir-ls-bin'
-let g:ale_fix_on_save = 1
-
-let g:ale_fixers = {
-            \  '*': ['remove_trailing_lines', 'trim_whitespace'],
-            \  'javascript': ['prettier'],
-            \  'html': ['prettier'],
-            \  'elixir': ['mix_format'],
-            \}
-
-let g:ale_linters = {
-            \  'elixir': ['elixir-ls'],
-            \  'javascript': ['prettier', 'eslint', 'tsserver'],
-            \}
 
 " Setting python providers (for deoplete)
 let g:python3_host_prog = '/usr/local/bin/python3'
@@ -295,12 +275,7 @@ let g:python_host_prog  = '/usr/local/bin/python2'
 " Deoplete
 let g:deoplete#enable_at_startup = 1
 
-" let g:deoplete#sources = {'_': ['ale', 'buffer']}
-" call deoplete#custom#source('ale', 'rank', 150)
-
 " FZF
-" command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-" command! -bang -nargs=* FindAll call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 function! FloatingFZF()
@@ -335,7 +310,7 @@ let g:lightline = {
             \ 'colorscheme': 'iceberg',
             \ 'mode_map': {'c': 'N', 'i': 'I', 'n': 'N', 'v': 'V'},
             \ 'active': {
-            \   'left': [['mode', 'paste'], ['cocstatus', 'fugitive', 'filename'] ],
+            \   'left': [['mode', 'paste'], ['fugitive', 'filename'] ],
             \   'right': [['lineinfo', 'sy'], [], ['fileformat', 'fileencoding', 'filetype']]
             \ },
             \ 'component_function': {
@@ -348,11 +323,8 @@ let g:lightline = {
             \   'fileencoding': 'MyFileencoding',
             \   'mode': 'MyMode',
             \   'sy': 'LightlineSignify',
-            \   'cocstatus': 'coc#status'
             \ },
-            \ 'component_expand': {
-            \   'ale': 'LinterStatus',
-            \ },
+            \ 'component_expand': {},
             \ 'separator': { 'left': '', 'right': '' },
             \ 'subseparator': { 'left': '|', 'right': '|' }
             \ }
@@ -360,19 +332,6 @@ let g:lightline = {
 let g:lightline.tab = {
             \ 'active': [ 'tabnum', 'filename', 'modified' ],
             \ 'inactive': [ 'tabnum', 'filename', 'modified' ] }
-
-function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-
-    return l:counts.total == 0 ? 'OK' : printf(
-                \   '%dW %dE',
-                \   all_non_errors,
-                \   all_errors
-                \)
-endfunction
 
 function! MyModified()
     return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -439,41 +398,7 @@ endfunction
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
-" CoC
-"
-" suggestions from the README
-
-set updatetime=300
-set shortmess+=c
-
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'elixir': ['~/builds/elixir-ls-bin/language_server.sh'],
+    \ }
