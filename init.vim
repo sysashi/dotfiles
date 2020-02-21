@@ -30,6 +30,8 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
+Plug 'rhysd/git-messenger.vim'
+Plug 'mhinz/vim-mix-format'
 
 " Syntax
 "
@@ -62,6 +64,8 @@ Plug 'tjammer/blayu.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'swalladge/antarctic-vim'
 Plug 'yasukotelin/shirotelin'
+Plug 'altercation/vim-colors-solarized'
+Plug 'sainnhe/edge'
 
 " Misc
 Plug 'junegunn/goyo.vim'
@@ -70,7 +74,6 @@ Plug 'junegunn/limelight.vim'
 call plug#end()
 
 filetype plugin indent on    " required
-set background=dark
 set tabstop=4       " Number of spaces that a <Tab> in the file counts for.
 
 set shiftwidth=4    " Number of spaces to use for each step of (auto)indent.
@@ -172,7 +175,6 @@ let g:signify_vcs_list = ['git']
 let g:signify_realtime = 100
 
 "--- sweet look ---
-"" let g:startify_custom_header =  map(split(system('fortune | cowsay'),'\n'), '" ". v:val')
 let g:startify_bookmarks = [ {'c': '~/.config/nvim/init.vim'}, {'z': '~/.zshrc'} ]
 let g:startify_custom_header = startify#fortune#cowsay()
 let g:startify_relative_path = 1
@@ -198,31 +200,26 @@ let g:startify_list_order = [
 " let g:terminal_color_4="#669acd"
 "-------------------------------------------------
 
+" Colorscheme settings
+
+let g:mix_format_on_save = 1
+
 let g:enable_bold_font = 1
-let g:enable_italic_font = 1
-
-" Colorscheme specific settings
-let g:gruvbox_italic=1
-let g:gruvbox_sign_column="bg0"
-let g:gruvbox_contrast_dark="meduim"
-let g:gruvbox_hls_cursor="orange"
-
-
-let g:spacegray_use_italics = 1
-
-"cosmic_latte PaperColor blayu snow  spacegray stellarized hybrid_material iceberg gruvbox
-
-" let g:seoul256_background = 235
-" let g:seoul256_light_background = 255
-" colo seoul256-light
-" color seoul256
-" let g:seoul256_srgb = 1
-
-
-colo iceberg
-" colo shirotelin
+let g:enable_italic_font = 0
 
 set signcolumn=yes
+
+"" Night
+" set background=dark
+" colo iceberg
+" lightline = iceberg / nord?
+
+
+"" Day
+set background=light
+colo shirotelin
+" lightline = OldHope
+
 highlight clear SignColumn
 highlight SignifySignAdd    cterm=bold ctermbg=237  ctermfg=119
 highlight SignifySignDelete cterm=bold ctermbg=237  ctermfg=167
@@ -230,8 +227,10 @@ highlight SignifySignChange cterm=bold ctermbg=237  ctermfg=227
 
 " mappings
 vnoremap <C-c> "*y  " Copy to the system clipboard in visual mode
+
 " remove trailing spaces
 nnoremap <silent> <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
 nnoremap <leader>h :SignifyToggleHighlight<CR>
 
 nmap <silent> <Left> <c-w> <
@@ -260,23 +259,20 @@ autocmd FileType fzf tnoremap <buffer> <C-j> <Down>
 autocmd FileType fzf tnoremap <buffer> <C-k> <Up>
 
 " Tab completion
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 
 " jump to last buffer
 nnoremap <leader><leader> <c-^>
 
+""" Deoplete-------------------------------------------------------------------
+let g:deoplete#enable_at_startup = 1
 
-" Setting python providers (for deoplete)
+" setting python providers (for deoplete)
 let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog  = '/usr/local/bin/python2'
 
-" Deoplete
-let g:deoplete#enable_at_startup = 1
-
-" FZF
-
+""" FZF -----------------------------------------------------------------------
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 function! FloatingFZF()
   let buf = nvim_create_buf(v:false, v:true)
@@ -297,7 +293,7 @@ function! FloatingFZF()
   call nvim_open_win(buf, v:true, opts)
 endfunction
 
-" FZF mappings
+" mappings
 nnoremap <silent><leader>p :GFiles<CR>
 nnoremap <silent><leader>c :GFiles?<CR>
 nnoremap <silent><leader>f :Files<CR>
@@ -305,9 +301,18 @@ nnoremap <silent><leader>s :Rg<CR>
 nnoremap <silent><leader>b :Buffers<CR>
 nnoremap <silent><leader>] :Colors<CR>
 
-" Lightline config
+""" LightLine -----------------------------------------------------------------
+
+command! LightlineReload call LightlineReload()
+
+function! LightlineReload()
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+endfunction
+
 let g:lightline = {
-            \ 'colorscheme': 'iceberg',
+            \ 'colorscheme': 'OldHope',
             \ 'mode_map': {'c': 'N', 'i': 'I', 'n': 'N', 'v': 'V'},
             \ 'active': {
             \   'left': [['mode', 'paste'], ['fugitive', 'filename'] ],
@@ -393,12 +398,33 @@ function! LightlineSignify()
     endif
 endfunction
 
-" Goyo
-
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-
+""" LanguageClient -----------------------------------------------------------
+" elixir': ['~/builds/elixir-ls-bin/language_server.sh'],
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'elixir': ['~/builds/elixir-ls-bin/language_server.sh'],
     \ }
+
+function! ToggleDarkTheme()
+    set background=dark
+
+    colorscheme iceberg
+
+    call lightline#init()
+    execute 'source' globpath(&rtp, 'autoload/lightline/colorscheme/iceberg.vim')
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
+
+function! ToggleLightTheme()
+    set background=dark
+
+    colorscheme shirotelin
+
+    call lightline#init()
+    execute 'source' globpath(&rtp, 'autoload/lightline/colorscheme/OldHope.vim')
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
+
+command! ToggleDarkTheme call ToggleDarkTheme()
+command! ToggleLightTheme call ToggleLightTheme()
