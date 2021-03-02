@@ -66,6 +66,13 @@ Plug 'swalladge/antarctic-vim'
 Plug 'yasukotelin/shirotelin'
 Plug 'altercation/vim-colors-solarized'
 Plug 'sainnhe/edge'
+Plug 'linusng/green-shades.vim'
+Plug 'kyoz/purify', { 'rtp': 'vim' }
+Plug 'noahfrederick/vim-noctu'
+Plug 'ajmwagar/vim-deus'
+Plug 'tssm/fairyfloss.vim'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'MisanthropicBit/vim-warlock'
 
 " Misc
 Plug 'junegunn/goyo.vim'
@@ -74,7 +81,7 @@ Plug 'junegunn/limelight.vim'
 call plug#end()
 
 filetype plugin indent on    " required
-set tabstop=4       " Number of spaces that a <Tab> in the file counts for.
+set tabstop=2       " Number of spaces that a <Tab> in the file counts for.
 
 set shiftwidth=4    " Number of spaces to use for each step of (auto)indent.
 
@@ -149,6 +156,7 @@ let g:syntastic_javascript_checkers = ['eslint']
 
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype json setlocal ts=2 sts=2 sw=2
 
 " misc
 set splitbelow
@@ -202,7 +210,7 @@ let g:startify_list_order = [
 
 " Colorscheme settings
 
-let g:mix_format_on_save = 1
+let g:mix_format_on_save = 0
 
 let g:enable_bold_font = 1
 let g:enable_italic_font = 0
